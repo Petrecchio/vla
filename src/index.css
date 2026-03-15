@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0f766e;
-  --color-primary-light: #14b8a6;
-  --color-primary-dark: #0d5c56;
-  --color-accent: #f59e0b;
-  --color-accent-light: #fbbf24;
-  --color-surface: #f8fafc;
-  --color-card: #ffffff;
+  /* Brand purple */
+  --color-primary:       #7c3aed;
+  --color-primary-light: #a78bfa;
+  --color-primary-dark:  #5b21b6;
+
+  /* Gold accent */
+  --color-accent:        #d97706;
+  --color-accent-light:  #f59e0b;
+  --color-accent-bright: #fbbf24;
+
+  /* Surfaces */
+  --color-surface:       #f5f3ff;   /* soft violet tint */
+  --color-card:          #ffffff;
 }
 
 html {
@@ -15,50 +21,40 @@ html {
 }
 
 body {
-  @apply bg-surface text-gray-800 antialiased;
+  background-color: var(--color-surface);
+  color: #1e1b4b;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
   -webkit-tap-highlight-color: transparent;
 }
 
-#root {
-  min-height: 100svh;
-}
+#root { min-height: 100svh; }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/30 rounded-full;
+  background: #a78bfa55;
+  border-radius: 99px;
 }
 
 @keyframes trolley-bounce {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-8px) rotate(-5deg); }
-  50% { transform: translateY(0) rotate(0deg); }
-  75% { transform: translateY(-4px) rotate(3deg); }
+  25%  { transform: translateY(-8px) rotate(-5deg); }
+  50%  { transform: translateY(0) rotate(0deg); }
+  75%  { transform: translateY(-4px) rotate(3deg); }
 }
-
-.animate-trolley-bounce {
-  animation: trolley-bounce 1.2s ease-in-out infinite;
-}
+.animate-trolley-bounce { animation: trolley-bounce 1.2s ease-in-out infinite; }
 
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.4s ease-out;
-}
+.animate-fade-in-up { animation: fade-in-up 0.4s ease-out; }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
 }
-
-.animate-scale-in {
-  animation: scale-in 0.3s ease-out;
-}
+.animate-scale-in { animation: scale-in 0.3s ease-out; }
 
 .pb-safe {
   padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { MapPin, Gift, Percent } from "lucide-react";
+import { MapPinned, Gift, Percent } from "lucide-react";
 
 export default function FlashCard({ structure }) {
   const navigate = useNavigate();
@@ -8,8 +8,9 @@ export default function FlashCard({ structure }) {
   return (
     <div
       onClick={() => navigate(`/structure/${id}`)}
-      className="bg-card rounded-2xl shadow-md overflow-hidden cursor-pointer
-                 transition-all duration-300 hover:shadow-lg hover:-translate-y-1
+      className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer
+                 border border-violet-100 transition-all duration-300
+                 hover:shadow-md hover:shadow-violet-100 hover:-translate-y-0.5
                  active:scale-[0.98] animate-fade-in-up"
     >
       {/* Image */}
@@ -20,8 +21,9 @@ export default function FlashCard({ structure }) {
           className="w-full h-full object-cover"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-violet-950/50 via-transparent to-transparent" />
         <div className="absolute top-3 left-3">
-          <span className="bg-white/90 backdrop-blur-sm text-xs font-semibold text-primary-dark px-2.5 py-1 rounded-full">
+          <span className="bg-white/95 backdrop-blur-sm text-[11px] font-bold text-primary uppercase tracking-wide px-2.5 py-1 rounded-full">
             {type}
           </span>
         </div>
@@ -29,12 +31,10 @@ export default function FlashCard({ structure }) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-base leading-tight">
-          {name}
-        </h3>
-        <div className="flex items-center gap-1 mt-1 text-gray-500">
-          <MapPin size={13} />
-          <span className="text-xs">{city}</span>
+        <h3 className="font-bold text-violet-950 text-base leading-tight">{name}</h3>
+        <div className="flex items-center gap-1 mt-1 text-violet-400">
+          <MapPinned size={13} />
+          <span className="text-xs font-medium">{city}</span>
         </div>
 
         {/* Offers */}
@@ -42,17 +42,13 @@ export default function FlashCard({ structure }) {
           {offers.map((offer) => (
             <span
               key={offer.id}
-              className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${
+              className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
                 offer.type === "discount"
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "bg-amber-50 text-amber-700"
+                  ? "bg-violet-100 text-violet-700"
+                  : "bg-amber-100 text-amber-700"
               }`}
             >
-              {offer.type === "discount" ? (
-                <Percent size={10} />
-              ) : (
-                <Gift size={10} />
-              )}
+              {offer.type === "discount" ? <Percent size={10} /> : <Gift size={10} />}
               {offer.label}
             </span>
           ))}

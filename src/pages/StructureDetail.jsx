@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  MapPin,
-  Star,
-  Gift,
-  Percent,
-  Luggage,
-} from "lucide-react";
+import { ArrowLeft, MapPinned, Star, Gift, Percent, Luggage } from "lucide-react";
 import { getStructureById } from "../data/structures";
 import ReviewModal from "../components/ReviewModal";
 import Spinner from "../components/Spinner";
@@ -17,7 +10,6 @@ export default function StructureDetail() {
   const navigate = useNavigate();
   const [showReview, setShowReview] = useState(false);
   const [fakeLoading, setFakeLoading] = useState(true);
-
   const structure = getStructureById(id);
 
   useEffect(() => {
@@ -26,50 +18,42 @@ export default function StructureDetail() {
   }, []);
 
   if (fakeLoading) return <Spinner />;
-  if (!structure) {
-    return (
-      <div className="min-h-svh flex items-center justify-center text-gray-500">
-        Struttura non trovata
-      </div>
-    );
-  }
+  if (!structure) return (
+    <div className="min-h-svh flex items-center justify-center text-violet-400">
+      Struttura non trovata
+    </div>
+  );
 
   return (
     <div className="pb-safe">
       {/* Hero Image */}
       <div className="relative h-64 sm:h-80">
-        <img
-          src={structure.image}
-          alt={structure.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+        <img src={structure.image} alt={structure.name} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-violet-950/80 via-violet-950/20 to-violet-950/30" />
 
-        {/* Back button */}
+        {/* Back */}
         <button
           onClick={() => navigate(-1)}
           className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-2 rounded-full
                      shadow-md transition-transform active:scale-90"
         >
-          <ArrowLeft size={20} className="text-gray-700" />
+          <ArrowLeft size={20} className="text-violet-900" />
         </button>
 
-        {/* Badge */}
+        {/* Overlay text */}
         <div className="absolute bottom-4 left-4 right-4">
-          <span className="inline-block bg-white/90 backdrop-blur-sm text-xs font-semibold text-primary-dark px-3 py-1 rounded-full mb-2">
+          <span className="inline-block bg-amber-400 text-[11px] font-black text-amber-900 uppercase tracking-wide px-3 py-1 rounded-full mb-2">
             {structure.type}
           </span>
-          <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-            {structure.name}
-          </h1>
+          <h1 className="text-2xl font-black text-white">{structure.name}</h1>
           <div className="flex items-center gap-3 mt-1">
-            <div className="flex items-center gap-1 text-white/90">
-              <MapPin size={14} />
+            <div className="flex items-center gap-1 text-white/80">
+              <MapPinned size={13} />
               <span className="text-sm">{structure.city}, {structure.region}</span>
             </div>
-            <div className="flex items-center gap-1 text-amber-300">
-              <Star size={14} fill="currentColor" />
-              <span className="text-sm font-semibold">{structure.rating}</span>
+            <div className="flex items-center gap-1 text-amber-400">
+              <Star size={13} fill="currentColor" />
+              <span className="text-sm font-black">{structure.rating}</span>
             </div>
           </div>
         </div>
@@ -79,17 +63,13 @@ export default function StructureDetail() {
       <div className="px-5 py-6">
         {/* Description */}
         <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">
-            Descrizione
-          </h2>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            {structure.description}
-          </p>
+          <h2 className="text-xs font-black text-violet-400 uppercase tracking-widest mb-2">Descrizione</h2>
+          <p className="text-sm text-violet-800 leading-relaxed">{structure.description}</p>
         </div>
 
         {/* Offers */}
         <div className="mb-8">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">
+          <h2 className="text-xs font-black text-violet-400 uppercase tracking-widest mb-3">
             Offerte Riscattabili
           </h2>
           <div className="space-y-2.5">
@@ -98,31 +78,21 @@ export default function StructureDetail() {
                 key={offer.id}
                 className={`flex items-center gap-3 p-3.5 rounded-xl border ${
                   offer.type === "discount"
-                    ? "bg-emerald-50/50 border-emerald-100"
-                    : "bg-amber-50/50 border-amber-100"
+                    ? "bg-violet-50 border-violet-100"
+                    : "bg-amber-50 border-amber-100"
                 }`}
               >
-                <div
-                  className={`p-2 rounded-lg ${
-                    offer.type === "discount"
-                      ? "bg-emerald-100 text-emerald-600"
-                      : "bg-amber-100 text-amber-600"
-                  }`}
-                >
-                  {offer.type === "discount" ? (
-                    <Percent size={18} />
-                  ) : (
-                    <Gift size={18} />
-                  )}
+                <div className={`p-2 rounded-lg ${
+                  offer.type === "discount"
+                    ? "bg-violet-200 text-primary"
+                    : "bg-amber-200 text-amber-700"
+                }`}>
+                  {offer.type === "discount" ? <Percent size={18} /> : <Gift size={18} />}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {offer.label}
-                  </p>
-                  <p className="text-[11px] text-gray-500">
-                    {offer.type === "discount"
-                      ? `Risparmia il ${offer.value}%`
-                      : "Omaggio incluso"}
+                  <p className="text-sm font-bold text-violet-950">{offer.label}</p>
+                  <p className="text-[11px] text-violet-400 font-medium">
+                    {offer.type === "discount" ? `Risparmia il ${offer.value}%` : "Omaggio incluso"}
                   </p>
                 </div>
               </div>
@@ -134,24 +104,19 @@ export default function StructureDetail() {
         <button
           onClick={() => setShowReview(true)}
           className="w-full flex items-center justify-center gap-2 bg-primary text-white
-                     font-bold py-4 rounded-xl transition-all hover:bg-primary-dark
-                     active:scale-[0.98] shadow-lg shadow-primary/25"
+                     font-black py-4 rounded-2xl transition-all hover:bg-primary-dark
+                     active:scale-[0.98] shadow-lg shadow-primary/30 text-base"
         >
           <Luggage size={20} />
           Lascia una Recensione Trolley
         </button>
-
-        <p className="text-center text-[11px] text-gray-400 mt-3">
+        <p className="text-center text-[11px] text-violet-400 mt-2 font-medium">
           Dopo aver pernottato e fatto scansionare il tuo QR code
         </p>
       </div>
 
-      {/* Review Modal */}
       {showReview && (
-        <ReviewModal
-          structureId={structure.id}
-          onClose={() => setShowReview(false)}
-        />
+        <ReviewModal structureId={structure.id} onClose={() => setShowReview(false)} />
       )}
     </div>
   );
