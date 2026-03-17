@@ -1,16 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Luggage, Mail, LockKeyhole, ArrowRight, UserRound, Building2, ChevronLeft } from "lucide-react";
+import { Luggage, Mail, LockKeyhole, ArrowRight, UserRound, Building2, ChevronLeft, MapPinned } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 export default function Landing() {
   const { login, loginAsStructure, structures } = useApp();
   const navigate = useNavigate();
+
+  // "role" | "user-auth" | "structure-pick" | "structure-auth"
   const [screen, setScreen] = useState("role");
   const [tab, setTab] = useState("login");
+
+  // User form
   const [email, setEmail] = useState("marco.rossi@email.com");
   const [password, setPassword] = useState("••••••••");
   const [name, setName] = useState("");
+
+  // Structure auth
+  const [selectedStructure, setSelectedStructure] = useState(null);
+  const [structEmail, setStructEmail] = useState("");
+  const [structPassword, setStructPassword] = useState("");
 
   const handleUserSubmit = (e) => {
     e.preventDefault();
@@ -18,8 +27,17 @@ export default function Landing() {
     setTimeout(() => navigate("/home"), 1300);
   };
 
-  const handleStructureLogin = (structure) => {
-    loginAsStructure(structure);
+  const handleSelectStructure = (structure) => {
+    setSelectedStructure(structure);
+    // Pre-fill mock credentials
+    setStructEmail(`gestore@${structure.name.toLowerCase().replace(/\s+/g, "")}.it`);
+    setStructPassword("••••••••");
+    setScreen("structure-auth");
+  };
+
+  const handleStructureSubmit = (e) => {
+    e.preventDefault();
+    loginAsStructure(selectedStructure);
     setTimeout(() => navigate("/struttura"), 1000);
   };
 
@@ -38,7 +56,6 @@ export default function Landing() {
       {/* ── ROLE SELECTION ── */}
       {screen === "role" && (
         <div className="w-full max-w-sm animate-fade-in-up space-y-3">
-          {/* Ospite */}
           <button
             onClick={() => setScreen("user-auth")}
             className="w-full flex items-center gap-4 bg-white rounded-2xl p-4 shadow-xl
@@ -54,7 +71,6 @@ export default function Landing() {
             <ArrowRight size={18} className="ml-auto text-violet-300 group-hover:text-primary transition-colors" />
           </button>
 
-          {/* Struttura */}
           <button
             onClick={() => setScreen("structure-pick")}
             className="w-full flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-4
@@ -165,7 +181,7 @@ export default function Landing() {
               {structures.map((s) => (
                 <button
                   key={s.id}
-                  onClick={() => handleStructureLogin(s)}
+                  onClick={() => handleSelectStructure(s)}
                   className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-violet-50 transition-colors text-left group"
                 >
                   <img src={s.image} alt={s.name} className="w-10 h-10 rounded-xl object-cover shrink-0" />
@@ -177,6 +193,80 @@ export default function Landing() {
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── STRUCTURE AUTH ── */}
+      {screen === "structure-auth" && selectedStructure && (
+        <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up">
+          {/* Structure hero */}
+          <div className="relative h-28 overflow-hidden">
+            <img
+              src={selectedStructure.image}
+              alt={selectedStructure.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-violet-950/80 via-violet-950/30 to-transparent" />
+            <button
+              onClick={() => setScreen("structure-pick")}
+              className="absolute top-3 left-3 bg-white/20 backdrop-blur-sm p-1.5 rounded-xl
+                         hover:bg-white/30 transition-colors"
+            >
+              <ChevronLeft size={16} className="text-white" />
+            </button>
+            <div className="absolute bottom-3 left-4 right-4">
+              <p className="text-[10px] text-amber-400 font-black uppercase tracking-widest">Accesso Gestore</p>
+              <p className="text-white font-black text-base leading-tight">{selectedStructure.name}</p>
+              <p className="text-white/60 text-xs flex items-center gap-1 mt-0.5">
+                <MapPinned size={10} />
+                {selectedStructure.city} · {selectedStructure.type}
+              </p>
+            </div>
+          </div>
+
+          {/* Form */}
+          <div className="p-6">
+            <form onSubmit={handleStructureSubmit} className="space-y-3">
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300" />
+                <input
+                  type="email"
+                  placeholder="Email gestore"
+                  value={structEmail}
+                  onChange={(e) => setStructEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-violet-50 rounded-xl text-sm text-violet-900
+                             focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white
+                             border border-transparent focus:border-primary transition-all placeholder:text-violet-300"
+                />
+              </div>
+              <div className="relative">
+                <LockKeyhole size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300" />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={structPassword}
+                  onChange={(e) => setStructPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-violet-50 rounded-xl text-sm text-violet-900
+                             focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white
+                             border border-transparent focus:border-primary transition-all placeholder:text-violet-300"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-white
+                           font-bold py-3.5 rounded-xl transition-all hover:bg-primary-dark
+                           active:scale-[0.98] shadow-lg shadow-primary/30 mt-1"
+              >
+                <Building2 size={18} />
+                Accedi al Pannello
+              </button>
+            </form>
+
+            <p className="text-center text-xs text-violet-400 mt-4">
+              Demo: clicca Accedi per entrare come gestore
+            </p>
           </div>
         </div>
       )}
