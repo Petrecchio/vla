@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider, useApp } from "./context/AppContext";
 import BottomNav from "./components/BottomNav";
 import Spinner from "./components/Spinner";
@@ -41,13 +41,13 @@ function ProtectedStructureLayout() {
 export default function App() {
   return (
     <AppProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/struttura" element={<ProtectedStructureLayout />} />
           <Route path="/*" element={<ProtectedUserLayout />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AppProvider>
   );
 }
