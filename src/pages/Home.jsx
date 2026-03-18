@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { ChevronDown, ChevronUp, Gem } from "lucide-react";
+import { ChevronDown, ChevronUp, Gem, MapPinned, ArrowRight } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import FlashCard from "../components/FlashCard";
+import { regions, regionNameToId } from "../data/regions";
+import { structureCountByRegion, getStructureById } from "../data/structures";
+import ItalyMap from "../components/ItalyMap";
+import RegionCard from "../components/RegionCard";
 import Spinner from "../components/Spinner";
 
 export default function Home() {
-  const { user, structures, wallet } = useApp();
+  const { user, wallet } = useApp();
   const [qrExpanded, setQrExpanded] = useState(false);
   const [fakeLoading, setFakeLoading] = useState(true);
 
@@ -14,6 +17,37 @@ export default function Home() {
     const t = setTimeout(() => setFakeLoading(false), 800);
     return () => clearTimeout(t);
   }, []);
+
+  const counts = useMemo(() => structureCountByRegion(), []);
+
+  // Regions that have at least 1 structure (active in VLA network)
+  const activeRegions = useMemo(
+    () => regions.filter((r) => {
+      const regionName = Object.entries(regionNameToId).find(([, v]) => v === r.id)?.[0];
+      return regionName && (counts[regionName] || 0) > 0;
+    }),
+    [counts]
+  );
+
+  // Region IDs where user has active vouchers
+  const vouchersByRegion = useMemo(() => {
+    const map = {};
+    wallet.vouchers
+      .filter((v) => !v.used)
+      .forEach((v) => {
+        const structure = getStructureById(v.redeemableAt);
+        if (structure) {
+          const rId = regionNameToId[structure.region];
+          if (rId) map[rId] = (map[rId] || 0) + 1;
+        }
+      });
+    return map;
+  }, [wallet.vouchers]);
+
+  const voucherRegionIds = useMemo(
+    () => Object.keys(vouchersByRegion),
+    [vouchersByRegion]
+  );
 
   if (fakeLoading) return <Spinner />;
 
@@ -69,19 +103,62 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Feed */}
+      {/* Map section */}
       <div className="px-4 py-6 -mt-2">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-black text-violet-950">Strutture della Rete</h2>
-          <span className="text-xs text-violet-400 font-semibold bg-violet-100 px-2.5 py-1 rounded-full">
-            {structures.length} disponibili
-          </span>
+        <div className="text-center mb-5">
+          <h2 className="text-lg font-black text-violet-950">La Rete VLA in Italia</h2>
+          <p className="text-xs text-violet-400 font-medium mt-1">
+            Tocca una regione per scoprire le strutture
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {structures.map((s) => (
-            <FlashCard key={s.id} structure={s} />
-          ))}
+        <ItalyMap voucherRegions={voucherRegionIds} />
+
+        {/* Network stat */}
+        <div className="mt-5 bg-violet-50 border border-violet-100 rounded-2xl p-4 flex items-center justify-around">
+          <div className="text-center">
+            <p className="text-2xl font-black text-primary">{activeRegions.length}</p>
+            <p className="text-[11px] text-violet-400 font-bold">Regioni</p>
+          </div>
+          <div className="w-px h-8 bg-violet-200" />
+          <div className="text-center">
+            <p className="text-2xl font-black text-primary">
+              {Object.values(counts).reduce((a, b) => a + b, 0)}
+            </p>
+            <p className="text-[11px] text-violet-400 font-bold">Strutture</p>
+          </div>
+          <div className="w-px h-8 bg-violet-200" />
+          <div className="text-center">
+            <p className="text-2xl font-black text-amber-500">
+              {wallet.vouchers.filter((v) => !v.used).length}
+            </p>
+            <p className="text-[11px] text-violet-400 font-bold">Voucher attivi</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Region cards horizontal scroll */}
+      <div className="px-4 pb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-black text-violet-950 flex items-center gap-2">
+            <MapPinned size={16} className="text-primary" />
+            Esplora le Regioni
+          </h2>
+          <ArrowRight size={16} className="text-violet-300" />
+        </div>
+
+        <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none -mx-4 px-4">
+          {activeRegions.map((region) => {
+            const regionName = Object.entries(regionNameToId).find(([, v]) => v === region.id)?.[0];
+            return (
+              <RegionCard
+                key={region.id}
+                region={region}
+                structureCount={counts[regionName] || 0}
+                voucherCount={vouchersByRegion[region.id] || 0}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

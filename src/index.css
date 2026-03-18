@@ -59,3 +59,7 @@ body {
 .pb-safe {
   padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
+
+/* Hide scrollbar for horizontal scroll containers */
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }

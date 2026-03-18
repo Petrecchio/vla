@@ -184,6 +184,118 @@ export const structures = [
       { id: "o26", label: "Sconto 10% soggiorno", type: "discount", value: 10 },
     ],
   },
+  {
+    id: 14,
+    name: "Maso Alpino Dolomiti",
+    type: "Agriturismo",
+    city: "Val di Fassa",
+    region: "Trentino-Alto Adige",
+    image: img("maso-dolomiti"),
+    description: "Maso ristrutturato tra prati alpini e boschi di larici. Cucina tirolese, sauna panoramica e silenzio assoluto.",
+    rating: 4.8,
+    offers: [
+      { id: "o27", label: "Cesto prodotti tipici tirolesi", type: "gift", value: null },
+      { id: "o28", label: "Sconto 15% settimana wellness", type: "discount", value: 15 },
+    ],
+  },
+  {
+    id: 15,
+    name: "Hotel Merano Terme",
+    type: "Hotel",
+    city: "Merano",
+    region: "Trentino-Alto Adige",
+    image: img("hotel-merano"),
+    description: "Hotel elegante nel centro di Merano con accesso diretto alle terme. Giardini botanici e cucina stellata.",
+    rating: 4.6,
+    offers: [
+      { id: "o29", label: "Ingresso terme gratuito", type: "gift", value: null },
+      { id: "o30", label: "Sconto 20% suite", type: "discount", value: 20 },
+    ],
+  },
+  {
+    id: 16,
+    name: "Resort Costa Smeralda",
+    type: "Resort",
+    city: "Porto Cervo",
+    region: "Sardegna",
+    image: img("resort-sardegna"),
+    description: "Resort esclusivo sulla Costa Smeralda con spiaggia privata, club nautico e ristorante gourmet vista mare.",
+    rating: 4.9,
+    offers: [
+      { id: "o31", label: "Escursione in barca gratuita", type: "gift", value: null },
+      { id: "o32", label: "Sconto 15% all-inclusive", type: "discount", value: 15 },
+    ],
+  },
+  {
+    id: 17,
+    name: "B&B Barbagia Autentica",
+    type: "B&B",
+    city: "Orgosolo",
+    region: "Sardegna",
+    image: img("bb-barbagia"),
+    description: "B&B nel cuore della Barbagia tra murales e tradizioni ancestrali. Colazione con seadas e formaggi locali.",
+    rating: 4.4,
+    offers: [
+      { id: "o33", label: "Degustazione formaggi sardi", type: "gift", value: null },
+      { id: "o34", label: "Sconto 10% soggiorno 2+ notti", type: "discount", value: 10 },
+    ],
+  },
+  {
+    id: 18,
+    name: "Palazzo Trastevere",
+    type: "Hotel Boutique",
+    city: "Roma",
+    region: "Lazio",
+    image: img("palazzo-roma"),
+    description: "Boutique hotel in un palazzo del '700 a Trastevere. Terrazza con vista sui tetti di Roma e aperitivi al tramonto.",
+    rating: 4.7,
+    offers: [
+      { id: "o35", label: "Tour privato centro storico", type: "gift", value: null },
+      { id: "o36", label: "Sconto 15% soggiorno", type: "discount", value: 15 },
+    ],
+  },
+  {
+    id: 19,
+    name: "Agriturismo Tuscia",
+    type: "Agriturismo",
+    city: "Viterbo",
+    region: "Lazio",
+    image: img("agri-tuscia"),
+    description: "Agriturismo nelle campagne della Tuscia tra terme etrusche, orti biologici e tramonti mozzafiato.",
+    rating: 4.5,
+    offers: [
+      { id: "o37", label: "Cesto ortaggi biologici", type: "gift", value: null },
+      { id: "o38", label: "Sconto 20% mezza pensione", type: "discount", value: 20 },
+    ],
+  },
+  {
+    id: 20,
+    name: "Grand Hotel Bologna",
+    type: "Hotel",
+    city: "Bologna",
+    region: "Emilia-Romagna",
+    image: img("hotel-bologna"),
+    description: "Hotel storico sotto i portici di Bologna. Cucina emiliana d'autore, cantina pregiata e posizione centrale.",
+    rating: 4.6,
+    offers: [
+      { id: "o39", label: "Cena degustazione emiliana", type: "gift", value: null },
+      { id: "o40", label: "Sconto 10% camera superior", type: "discount", value: 10 },
+    ],
+  },
+  {
+    id: 21,
+    name: "Casa sulla Riviera",
+    type: "Casa Vacanza",
+    city: "Rimini",
+    region: "Emilia-Romagna",
+    image: img("casa-rimini"),
+    description: "Appartamento fronte mare sulla riviera romagnola. Spiaggia privata, piadina a colazione e vita notturna.",
+    rating: 4.3,
+    offers: [
+      { id: "o41", label: "Ombrellone e lettino gratis", type: "gift", value: null },
+      { id: "o42", label: "Sconto 15% settimana intera", type: "discount", value: 15 },
+    ],
+  },
 ];
 
 export const getStructureById = (id) => structures.find((s) => s.id === Number(id));
@@ -191,3 +303,14 @@ export const getStructureById = (id) => structures.find((s) => s.id === Number(i
 // Get random structures excluding a specific one (for cross-network rewards)
 export const getOtherStructures = (excludeId) =>
   structures.filter((s) => s.id !== Number(excludeId));
+
+// Get structures by region name
+export const getStructuresByRegion = (regionName) =>
+  structures.filter((s) => s.region === regionName);
+
+// Count structures per region name → { "Campania": 2, "Toscana": 1, ... }
+export const structureCountByRegion = () =>
+  structures.reduce((acc, s) => {
+    acc[s.region] = (acc[s.region] || 0) + 1;
+    return acc;
+  }, {});

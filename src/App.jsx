@@ -4,6 +4,7 @@ import BottomNav from "./components/BottomNav";
 import Spinner from "./components/Spinner";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
+import RegionPage from "./pages/RegionPage";
 import StructureDetail from "./pages/StructureDetail";
 import WalletPage from "./pages/Wallet";
 import Profile from "./pages/Profile";
@@ -17,6 +18,7 @@ function ProtectedUserLayout() {
     <div className="max-w-lg mx-auto min-h-svh bg-surface relative">
       <Routes>
         <Route path="/home" element={<Home />} />
+        <Route path="/region/:regionId" element={<RegionPage />} />
         <Route path="/structure/:id" element={<StructureDetail />} />
         <Route path="/wallet" element={<WalletPage />} />
         <Route path="/profile" element={<Profile />} />
